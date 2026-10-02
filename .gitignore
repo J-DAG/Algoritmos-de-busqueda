@@ -2,6 +2,18 @@
 out/
 !**/src/main/**/out/
 !**/src/test/**/out/
+/.idea/tasks.xml
+/.idea/shelf/
+/.idea/httpRequests/
+
+### Java build output ###
+*.class
+/target/
+/build/
+/.gradle/
+
+### Logs ###
+*.log
 
 ### Eclipse ###
 .apt_generated
