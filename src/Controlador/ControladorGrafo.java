@@ -91,4 +91,23 @@ public class ControladorGrafo {
         establecerInicio("H");
         establecerObjetivo("G");
     }
+
+    /** Carga el ejemplo ponderado de A* con H como inicio y F como objetivo. */
+    public void cargarEjemploAEstrella() {
+        nuevoGrafo(false);
+        String[] ids = {"H", "A", "C", "D", "E", "G", "J", "K", "L", "B", "F"};
+        double[] heuristicas = {20, 14, 16, 9, 5, 12, 8, 3, 6, 3, 0};
+        for (int i = 0; i < ids.length; i++) {
+            agregarNodo(ids[i], heuristicas[i]);
+        }
+
+        String[][] aristas = {{"H", "A", "14"}, {"H", "C", "16"}, {"A", "D", "9"},
+                {"A", "E", "5"}, {"C", "G", "12"}, {"C", "J", "8"}, {"D", "K", "3"},
+                {"D", "L", "6"}, {"J", "B", "3"}, {"L", "F", "6"}, {"B", "F", "4"}};
+        for (String[] arista : aristas) {
+            agregarConexion(arista[0], arista[1], Double.parseDouble(arista[2]));
+        }
+        establecerInicio("H");
+        establecerObjetivo("F");
+    }
 }

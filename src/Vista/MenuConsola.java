@@ -12,6 +12,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.Locale;
 import java.util.stream.Collectors;
 
 /** Vista de consola: recoge entradas y presenta datos devueltos por los controladores. */
@@ -33,14 +35,18 @@ public class MenuConsola {
         System.out.println("MÉTODOS DE BÚSQUEDA EN IA");
         System.out.println("Grafo inicial:");
         System.out.println("1. Ejemplo de clase H → G (predeterminado)");
-        System.out.println("2. Grafo vacío no dirigido");
-        System.out.println("3. Grafo vacío dirigido");
-        int opcionInicial = leerOpcionConDefecto("Seleccione una opción", 1, 3, 1);
+        System.out.println("2. Ejemplo ponderado A* H → F");
+        System.out.println("3. Grafo vacío no dirigido");
+        System.out.println("4. Grafo vacío dirigido");
+        int opcionInicial = leerOpcionConDefecto("Seleccione una opción", 1, 4, 1);
         if (opcionInicial == 1) {
             controladorGrafo.cargarEjemploClase();
             System.out.println("Ejemplo cargado: H es el inicio y G el objetivo; cada conexión tiene peso 1.");
+        } else if (opcionInicial == 2) {
+            controladorGrafo.cargarEjemploAEstrella();
+            System.out.println("Ejemplo A* cargado: H es el inicio, F el objetivo y las heurísticas están asignadas.");
         } else {
-            controladorGrafo.nuevoGrafo(opcionInicial == 3);
+            controladorGrafo.nuevoGrafo(opcionInicial == 4);
         }
 
         int opcion;
@@ -157,7 +163,7 @@ public class MenuConsola {
         ResultadoBusqueda resultado = controladorBusqueda.buscar(metodo,
                 controladorGrafo.getGrafo(), inicio, objetivo);
         System.out.println("\nMétodo: " + metodo);
-        mostrarResultado(resultado);
+        mostrarResultado(resultado, metodo);
     }
 
     private void compararAlgoritmos() {
@@ -186,7 +192,7 @@ public class MenuConsola {
         return nombres.get(leerOpcion("Método", 1, nombres.size()) - 1);
     }
 
-    private void mostrarResultado(ResultadoBusqueda resultado) {
+    private void mostrarResultado(ResultadoBusqueda resultado, String metodo) {
         System.out.println(resultado.getMensaje());
         System.out.println("Visitados/explorados: " + listaIds(resultado.getVisitados()));
         if (resultado.isEncontrado()) {
@@ -196,6 +202,10 @@ public class MenuConsola {
             System.out.println("Camino: no encontrado");
         }
         System.out.println("Nodos explorados: " + resultado.getNodosExplorados());
+        if ("A*".equals(metodo)) {
+            mostrarTablaAEstrella(resultado);
+            return;
+        }
         System.out.println("Análisis paso a paso:");
         if (!resultado.getPasos().isEmpty()) {
             PasoBusqueda primero = resultado.getPasos().get(0);
@@ -230,6 +240,38 @@ public class MenuConsola {
             }
             System.out.println(" | agregados: " + listaIds(paso.getNodosAgregados()));
         }
+    }
+
+    private void mostrarTablaAEstrella(ResultadoBusqueda resultado) {
+        System.out.println("Análisis A*: candidatos expresados como nodo(h(n)+g(n)=f(n))");
+        System.out.printf("%-20s | %s%n", "Nodo seleccionado", "Candidatos antes de extraer");
+        List<Nodo> candidatos = new ArrayList<>();
+        Map<Nodo, Double> costos = new LinkedHashMap<>();
+        Nodo inicio = controladorGrafo.getInicio();
+        candidatos.add(inicio);
+        costos.put(inicio, 0.0);
+
+        for (PasoBusqueda paso : resultado.getPasos()) {
+            StringBuilder textoCandidatos = new StringBuilder();
+            for (Nodo candidato : candidatos) {
+                if (textoCandidatos.length() > 0) textoCandidatos.append(", ");
+                double g = costos.get(candidato);
+                double h = candidato.getHeuristica();
+                textoCandidatos.append(candidato.getId()).append("(")
+                        .append(formatearNumero(h)).append("+")
+                        .append(formatearNumero(g)).append("=")
+                        .append(formatearNumero(h + g)).append(")");
+            }
+            System.out.printf("%-20s | %s%n", paso.getNodoExtraido().getId(),
+                    textoCandidatos.length() == 0 ? "—" : textoCandidatos);
+            candidatos = paso.getFrontera();
+            costos = paso.getCostosAcumuladosFrontera();
+        }
+    }
+
+    private static String formatearNumero(double numero) {
+        if (numero == Math.rint(numero)) return Long.toString((long) numero);
+        return String.format(Locale.ROOT, "%.2f", numero);
     }
 
     private void mostrarGrafo() {

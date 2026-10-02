@@ -7,12 +7,15 @@ Este manual describe cómo funciona el programa Java de este repositorio. Se enf
 Ejecuta `Main.main()` desde IntelliJ IDEA. Al iniciar aparece una selección de grafo:
 
 1. **Ejemplo de clase H → G**, opción predeterminada: presiona Enter.
-2. Grafo vacío no dirigido.
-3. Grafo vacío dirigido.
+2. **Ejemplo ponderado A* H → F**.
+3. Grafo vacío no dirigido.
+4. Grafo vacío dirigido.
 
 El ejemplo contiene los nodos `H, A, B, C, D, E, F, G, J, K, L`. Las conexiones tienen peso 1; `H` es el inicio y `G` el objetivo. También incluye heurísticas para probar los métodos informados.
 
 En el menú, selecciona **9. Ejecutar búsqueda** y luego el método. Con BFS, el camino esperado es `H → C → G`.
+
+En el segundo ejemplo, selecciona **A*** para ver la tabla de candidatos con `h(n) + g(n) = f(n)`.
 
 ## 2. Organización del código
 
@@ -168,9 +171,37 @@ Utiliza una cola de prioridad ordenada por `f(n) = g(n) + h(n)`. Conserva el men
 - `f(n)`: prioridad con la que A* ordena la frontera.
 - **Garantía:** encuentra la ruta de costo mínimo cuando la heurística es admisible (no sobreestima el costo restante) y los pesos no son negativos.
 
-La consola registra qué nodos quedan en la frontera, pero todavía no imprime el valor numérico `g`, `h` y `f` junto a cada nodo.
+La consola muestra una tabla por extracción. Para cada candidato imprime `nodo(h+g=f)` en el orden de prioridad de la frontera. La fila de un nodo indica los candidatos que había antes de extraerlo.
 
-## 6. Diferencias de criterio
+## 6. Ejemplo ponderado de A*
+
+Al iniciar, selecciona la opción **2. Ejemplo ponderado A* H → F**. Se crea un grafo no dirigido con estas heurísticas:
+
+| Nodo | H | A | C | D | E | G | J | K | L | B | F |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| `h(n)` | 20 | 14 | 16 | 9 | 5 | 12 | 8 | 3 | 6 | 3 | 0 |
+
+Los pesos son los números junto a las aristas del dibujo: `H-A=14`, `H-C=16`, `A-D=9`, `A-E=5`, `C-G=12`, `C-J=8`, `D-K=3`, `D-L=6`, `J-B=3`, `L-F=6` y `B-F=4`. El inicio es `H` y el objetivo es `F`.
+
+Con el desempate estable por orden de inserción que usa `EntradaPrioridad`, A* muestra:
+
+| Nodo seleccionado | Candidatos antes de extraer (`nodo(h+g=f)`) |
+| --- | --- |
+| H | H(20+0=20) |
+| A | A(14+14=28), C(16+16=32) |
+| E | E(5+19=24), C(16+16=32), D(9+23=32) |
+| C | C(16+16=32), D(9+23=32) |
+| D | D(9+23=32), J(8+24=32), G(12+28=40) |
+| K | K(3+26=29), J(8+24=32), L(6+29=35), G(12+28=40) |
+| J | J(8+24=32), L(6+29=35), G(12+28=40) |
+| B | B(3+27=30), L(6+29=35), G(12+28=40) |
+| F | F(0+31=31), L(6+29=35), G(12+28=40) |
+
+El resultado es el camino `H → C → J → B → F`, con costo total `31`. Aunque `C` y `D` empatan con `f=32`, `C` se insertó primero y se extrae primero. La heurística indicada para `C` (`16`) sobreestima en 1 el costo real restante hasta `F` (`J-B-F = 8+3+4 = 15`), así que en este ejemplo A* encuentra el camino de costo 31, pero la condición general de optimalidad no queda garantizada por esa heurística.
+
+**Nota sobre la tabla compartida:** siguiendo literalmente los pesos del dibujo, `g(C)=16` y `g(D)=14+9=23`; por eso no resultan `C(16+14)` ni `D(9+28)`. Además, después de `E`, `C` y `D` empatan con `f=32`, así que la implementación extrae primero `C` por orden de inserción. La tabla de arriba conserva las heurísticas y pesos del diagrama y refleja los cálculos de la implementación.
+
+## 7. Diferencias de criterio
 
 | Método | Estructura | Criterio de selección | ¿Garantiza costo mínimo? |
 | --- | --- | --- | --- |
@@ -183,7 +214,7 @@ La consola registra qué nodos quedan en la frontera, pero todavía no imprime e
 | Greedy | Cola de prioridad | `h(n)` | No |
 | A* | Cola de prioridad | `g(n) + h(n)` | Sí, con heurística admisible y pesos no negativos |
 
-## 7. Cómo agregar otro método
+## 8. Cómo agregar otro método
 
 1. Crear una clase en `Modelo.Busqueda` que implemente `MetodoBusqueda`.
 2. Validar los argumentos y resolver los nodos del grafo con `UtilidadesBusqueda`.
@@ -192,7 +223,7 @@ La consola registra qué nodos quedan en la frontera, pero todavía no imprime e
 5. Devolver `ResultadoBusqueda` en éxito o fracaso.
 6. Registrar la instancia en el constructor de `ControladorBusqueda`; el menú y el comparador enumeran los métodos registrados.
 
-## 8. Notas de interpretación
+## 9. Notas de interpretación
 
 - `visitados` representa nodos extraídos/procesados. En IDDFS incluye visitas repetidas entre límites; en bidireccional conserva nodos únicos.
 - El costo que se muestra es el costo de la ruta devuelta, incluso para BFS y DFS. No significa que esos métodos hayan optimizado el costo.

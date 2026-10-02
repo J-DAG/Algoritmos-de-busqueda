@@ -6,6 +6,7 @@ import Modelo.Nodo;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.PriorityQueue;
@@ -53,6 +54,19 @@ final class UtilidadesBusqueda {
             }
         }
         return nodos;
+    }
+
+    static Map<Nodo, Double> obtenerCostosFrontera(PriorityQueue<EntradaPrioridad> frontera,
+                                                    Map<Nodo, Double> mejorCosto) {
+        PriorityQueue<EntradaPrioridad> copia = new PriorityQueue<>(frontera);
+        Map<Nodo, Double> costos = new LinkedHashMap<>();
+        while (!copia.isEmpty()) {
+            EntradaPrioridad entrada = copia.remove();
+            if (Double.compare(entrada.costoAcumulado, mejorCosto.get(entrada.nodo)) == 0) {
+                costos.put(entrada.nodo, entrada.costoAcumulado);
+            }
+        }
+        return costos;
     }
 
     static double calcularCosto(List<Nodo> camino) {

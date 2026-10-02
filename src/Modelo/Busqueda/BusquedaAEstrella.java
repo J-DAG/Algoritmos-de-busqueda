@@ -57,9 +57,10 @@ public class BusquedaAEstrella implements MetodoBusqueda {
                 }
             }
 
+            List<Nodo> fronteraOrdenada = UtilidadesBusqueda.obtenerFronteraOrdenada(frontera, mejorCosto);
+            Map<Nodo, Double> costosFrontera = UtilidadesBusqueda.obtenerCostosFrontera(frontera, mejorCosto);
             pasos.add(new PasoBusqueda(pasos.size() + 1, actual,
-                    PasoBusqueda.TipoFrontera.PRIORIDAD,
-                    UtilidadesBusqueda.obtenerFronteraOrdenada(frontera, mejorCosto), agregados));
+                    PasoBusqueda.TipoFrontera.PRIORIDAD, fronteraOrdenada, agregados, costosFrontera));
 
             if (actual.equals(nodoObjetivo)) {
                 List<Nodo> camino = UtilidadesBusqueda.reconstruirCamino(padres, nodoObjetivo);

@@ -3,6 +3,7 @@ package Modelo;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 /** Instantánea de un paso de búsqueda después de expandir el nodo extraído. */
@@ -27,31 +28,44 @@ public class PasoBusqueda {
     private final List<Nodo> frontera;
     private final List<Nodo> fronteraOpuesta;
     private final List<Nodo> nodosAgregados;
+    private final Map<Nodo, Double> costosAcumuladosFrontera;
     private final int limiteProfundidad;
 
     public PasoBusqueda(int numero, Nodo nodoExtraido, TipoFrontera tipoFrontera,
                         List<Nodo> frontera, List<Nodo> nodosAgregados) {
         this(numero, nodoExtraido, tipoFrontera, LadoBusqueda.UNICO,
-                frontera, Collections.emptyList(), nodosAgregados, -1);
+                frontera, Collections.emptyList(), nodosAgregados,
+                Collections.emptyMap(), -1);
     }
 
     public PasoBusqueda(int numero, Nodo nodoExtraido, TipoFrontera tipoFrontera,
                         LadoBusqueda ladoBusqueda, List<Nodo> frontera,
                         List<Nodo> fronteraOpuesta, List<Nodo> nodosAgregados) {
         this(numero, nodoExtraido, tipoFrontera, ladoBusqueda,
-                frontera, fronteraOpuesta, nodosAgregados, -1);
+                frontera, fronteraOpuesta, nodosAgregados,
+                Collections.emptyMap(), -1);
     }
 
     public PasoBusqueda(int numero, Nodo nodoExtraido, TipoFrontera tipoFrontera,
                         List<Nodo> frontera, List<Nodo> nodosAgregados,
                         int limiteProfundidad) {
         this(numero, nodoExtraido, tipoFrontera, LadoBusqueda.UNICO,
-                frontera, Collections.emptyList(), nodosAgregados, limiteProfundidad);
+                frontera, Collections.emptyList(), nodosAgregados,
+                Collections.emptyMap(), limiteProfundidad);
+    }
+
+    public PasoBusqueda(int numero, Nodo nodoExtraido, TipoFrontera tipoFrontera,
+                        List<Nodo> frontera, List<Nodo> nodosAgregados,
+                        Map<Nodo, Double> costosAcumuladosFrontera) {
+        this(numero, nodoExtraido, tipoFrontera, LadoBusqueda.UNICO,
+                frontera, Collections.emptyList(), nodosAgregados,
+                costosAcumuladosFrontera, -1);
     }
 
     private PasoBusqueda(int numero, Nodo nodoExtraido, TipoFrontera tipoFrontera,
                          LadoBusqueda ladoBusqueda, List<Nodo> frontera,
                          List<Nodo> fronteraOpuesta, List<Nodo> nodosAgregados,
+                         Map<Nodo, Double> costosAcumuladosFrontera,
                          int limiteProfundidad) {
         if (numero < 1) {
             throw new IllegalArgumentException("El número de paso debe ser positivo.");
@@ -63,6 +77,10 @@ public class PasoBusqueda {
         this.frontera = copiaInmutable(frontera, "La frontera no puede ser null.");
         this.fronteraOpuesta = copiaInmutable(fronteraOpuesta, "La frontera opuesta no puede ser null.");
         this.nodosAgregados = copiaInmutable(nodosAgregados, "Los nodos agregados no pueden ser null.");
+        Objects.requireNonNull(costosAcumuladosFrontera,
+                "Los costos acumulados de frontera no pueden ser null.");
+        this.costosAcumuladosFrontera = Collections.unmodifiableMap(
+                new java.util.LinkedHashMap<>(costosAcumuladosFrontera));
         if (limiteProfundidad < -1) {
             throw new IllegalArgumentException("El límite de profundidad no puede ser menor que -1.");
         }
@@ -98,6 +116,11 @@ public class PasoBusqueda {
     /** Nodos descubiertos al expandir el nodo extraído. */
     public List<Nodo> getNodosAgregados() {
         return nodosAgregados;
+    }
+
+    /** Costos g(n) para los nodos prioritarios que siguen en frontera, si aplica. */
+    public Map<Nodo, Double> getCostosAcumuladosFrontera() {
+        return costosAcumuladosFrontera;
     }
 
     /** -1 cuando el algoritmo no trabaja con límite de profundidad. */
