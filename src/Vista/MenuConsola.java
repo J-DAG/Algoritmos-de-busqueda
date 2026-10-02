@@ -202,7 +202,7 @@ public class MenuConsola {
             System.out.println("Camino: no encontrado");
         }
         System.out.println("Nodos explorados: " + resultado.getNodosExplorados());
-        if ("A*".equals(metodo)) {
+        if ("Búsqueda A*".equals(metodo)) {
             mostrarTablaAEstrella(resultado);
             return;
         }

@@ -22,14 +22,14 @@ public class ControladorBusqueda {
     private final Map<String, MetodoBusqueda> metodos = new LinkedHashMap<>();
 
     public ControladorBusqueda() {
-        registrarMetodo("BFS", new BusquedaAmplitud());
-        registrarMetodo("DFS", new BusquedaProfundidad());
+        registrarMetodo("Amplitud", new BusquedaAmplitud());
+        registrarMetodo("Profundidad", new BusquedaProfundidad());
         registrarMetodo("Bidireccional", new BusquedaBidireccional());
-        registrarMetodo("IDDFS", new BusquedaProfundidadIterativa());
-        registrarMetodo("UCS", new BusquedaCosteUniforme());
-        registrarMetodo("Hill Climbing", new AscensoColina());
-        registrarMetodo("Greedy", new BusquedaPrimeroMejor());
-        registrarMetodo("A*", new BusquedaAEstrella());
+        registrarMetodo("Profundidad iterativa", new BusquedaProfundidadIterativa());
+        registrarMetodo("Búsqueda de coste uniforme", new BusquedaCosteUniforme());
+        registrarMetodo("Método del gradiente (Ascenso a la colina)", new AscensoColina());
+        registrarMetodo("Búsqueda primero el mejor", new BusquedaPrimeroMejor());
+        registrarMetodo("Búsqueda A*", new BusquedaAEstrella());
     }
 
     public void registrarMetodo(String nombre, MetodoBusqueda metodo) {
