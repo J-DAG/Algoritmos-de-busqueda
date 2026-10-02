@@ -5,6 +5,8 @@ out/
 /.idea/tasks.xml
 /.idea/shelf/
 /.idea/httpRequests/
+/.idea/workspace.xml
+/.idea/mavenHomeManager.xml
 
 ### Java build output ###
 *.class
