@@ -32,23 +32,6 @@ public class MenuConsola {
     }
 
     public void iniciar() {
-        System.out.println("MÉTODOS DE BÚSQUEDA EN IA");
-        System.out.println("Grafo inicial:");
-        System.out.println("1. Ejemplo de clase H → G (predeterminado)");
-        System.out.println("2. Ejemplo ponderado A* H → F");
-        System.out.println("3. Grafo vacío no dirigido");
-        System.out.println("4. Grafo vacío dirigido");
-        int opcionInicial = leerOpcionConDefecto("Seleccione una opción", 1, 4, 1);
-        if (opcionInicial == 1) {
-            controladorGrafo.cargarEjemploClase();
-            System.out.println("Ejemplo cargado: H es el inicio y G el objetivo; cada conexión tiene peso 1.");
-        } else if (opcionInicial == 2) {
-            controladorGrafo.cargarEjemploAEstrella();
-            System.out.println("Ejemplo A* cargado: H es el inicio, F el objetivo y las heurísticas están asignadas.");
-        } else {
-            controladorGrafo.nuevoGrafo(opcionInicial == 4);
-        }
-
         int opcion;
         do {
             mostrarMenu();
@@ -414,17 +397,4 @@ public class MenuConsola {
         }
     }
 
-    private int leerOpcionConDefecto(String mensaje, int minimo, int maximo, int defecto) {
-        while (true) {
-            String valor = leerTexto(mensaje + " [" + defecto + "]");
-            if (valor.isEmpty()) return defecto;
-            try {
-                int opcion = Integer.parseInt(valor);
-                if (opcion >= minimo && opcion <= maximo) return opcion;
-            } catch (NumberFormatException ignored) {
-                // Se vuelve a solicitar una opción válida.
-            }
-            System.out.println("Selecciona un número entre " + minimo + " y " + maximo + ".");
-        }
-    }
 }

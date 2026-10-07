@@ -10,7 +10,7 @@ public class ControladorGrafo {
     private String idObjetivo;
 
     public ControladorGrafo() {
-        this(new Grafo());
+        this(new Grafo(true));
     }
 
     public ControladorGrafo(Grafo grafo) {

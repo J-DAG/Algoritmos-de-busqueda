@@ -8,18 +8,7 @@ La opción **Asignar heurística** recorre los nodos existentes y solicita `h(n)
 
 ## 1. Ejecutar el programa
 
-Ejecuta `Main.main()` desde IntelliJ IDEA. Al iniciar aparece una selección de grafo:
-
-1. **Ejemplo de clase H → G**, opción predeterminada: presiona Enter.
-2. **Ejemplo ponderado A* H → F**.
-3. Grafo vacío no dirigido.
-4. Grafo vacío dirigido.
-
-El ejemplo contiene los nodos `H, A, B, C, D, E, F, G, J, K, L`. Las conexiones tienen peso 1; `H` es el inicio y `G` el objetivo. También incluye heurísticas para probar los métodos informados.
-
-En el menú, selecciona **9. Ejecutar búsqueda** y luego el método. Con BFS, el camino esperado es `H → C → G`.
-
-En el segundo ejemplo, selecciona **A*** para ver la tabla de candidatos con `h(n) + g(n) = f(n)`.
+Ejecuta `Main.main()` desde IntelliJ IDEA. El programa abre directamente el menú principal con un grafo dirigido vacío. Crea los nodos y las conexiones desde las opciones del menú; cada conexión solo se recorre en el sentido indicado (origen → destino). Para probar los métodos, establece los nodos inicial y objetivo y luego selecciona **9. Ejecutar búsqueda**. El ejemplo de clase H → G y el ejemplo ponderado de A* se pueden reconstruir siguiendo las secciones correspondientes de este manual.
 
 ## 2. Organización del código
 
@@ -179,7 +168,7 @@ La consola muestra una tabla por extracción. Para cada candidato imprime `nodo(
 
 ## 6. Ejemplo ponderado de A*
 
-Al iniciar, selecciona la opción **2. Ejemplo ponderado A* H → F**. Se crea un grafo no dirigido con estas heurísticas:
+Para reconstruir este ejemplo desde el menú, crea los nodos y las conexiones en el sentido indicado por el diagrama. Luego establece `H` como inicio, `F` como objetivo y asigna las heurísticas listadas. El ejemplo de referencia contiene:
 
 | Nodo | H | A | C | D | E | G | J | K | L | B | F |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
