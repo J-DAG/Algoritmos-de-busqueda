@@ -66,7 +66,7 @@ public class MenuConsola {
         System.out.println("\n=========================================");
         System.out.println("       MÉTODOS DE BÚSQUEDA EN IA");
         System.out.println("=========================================");
-        System.out.println("1. Crear nodo");
+        System.out.println("1. Crear nodo(s)");
         System.out.println("2. Crear conexión");
         System.out.println("3. Eliminar nodo");
         System.out.println("4. Eliminar conexión");
@@ -101,12 +101,25 @@ public class MenuConsola {
     }
 
     private void crearNodo() {
-        String id = leerTexto("Id del nodo");
-        if (controladorGrafo.agregarNodo(id, 0.0)) {
-            System.out.println("Nodo creado.");
-        } else {
-            System.out.println("Ya existe un nodo con ese id.");
+        System.out.println("Puedes ingresar uno o varios IDs separados por comas (ejemplo: H, A, B, C).");
+        String[] ids = leerTexto("IDs de los nodos").split(",");
+        List<String> creados = new ArrayList<>();
+        List<String> existentes = new ArrayList<>();
+        for (String id : ids) {
+            String idLimpio = id.trim();
+            if (idLimpio.isEmpty()) continue;
+            if (controladorGrafo.agregarNodo(idLimpio, 0.0)) {
+                creados.add(idLimpio);
+            } else {
+                existentes.add(idLimpio);
+            }
         }
+        if (creados.isEmpty() && existentes.isEmpty()) {
+            System.out.println("No se ingresaron IDs; no se creó ningún nodo.");
+            return;
+        }
+        if (!creados.isEmpty()) System.out.println("Nodos creados: " + creados);
+        if (!existentes.isEmpty()) System.out.println("IDs ya existentes (omitidos): " + existentes);
     }
 
     private void crearConexion() {

@@ -2,6 +2,8 @@
 
 Este manual describe cómo funciona el programa Java de este repositorio. Se enfoca en la implementación: qué estructura utiliza cada método, cómo selecciona el siguiente nodo, cómo reconstruye el camino y cómo leer el análisis que muestra la consola.
 
+En la opción **Crear nodo(s)** puedes ingresar varios identificadores separados por comas, por ejemplo `H, A, B, C`. Los IDs se recortan para quitar espacios; si alguno ya existe, se omite y se informa sin detener la creación de los demás. Los nodos creados desde esta opción comienzan con heurística `0`; después puedes ajustarla en **Asignar heurística**.
+
 ## 1. Ejecutar el programa
 
 Ejecuta `Main.main()` desde IntelliJ IDEA. Al iniciar aparece una selección de grafo:
