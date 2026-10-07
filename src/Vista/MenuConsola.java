@@ -153,10 +153,39 @@ public class MenuConsola {
     }
 
     private void asignarHeuristica() {
-        String id = leerTexto("Id del nodo");
-        double heuristica = leerDecimal("Heurística h(n)");
-        System.out.println(controladorGrafo.asignarHeuristica(id, heuristica)
-                ? "Heurística actualizada." : "No existe ese nodo.");
+        List<Nodo> nodos = controladorGrafo.getGrafo().obtenerNodos();
+        if (nodos.isEmpty()) {
+            System.out.println("Crea al menos un nodo antes de asignar heurísticas.");
+            return;
+        }
+
+        System.out.println("Ingresa la heurística de cada nodo. Usa Enter para conservar el valor actual.");
+        for (Nodo nodo : nodos) {
+            double heuristica = leerDecimalOpcional("h(" + nodo.getId() + ") ["
+                    + nodo.getHeuristica() + "]", nodo.getHeuristica());
+            controladorGrafo.asignarHeuristica(nodo.getId(), heuristica);
+        }
+
+        while (true) {
+            mostrarHeuristicas();
+            String id = leerTexto("ID del nodo que deseas corregir (Enter para terminar)");
+            if (id.isEmpty()) break;
+            Nodo nodo = controladorGrafo.getGrafo().buscarNodo(id);
+            if (nodo == null) {
+                System.out.println("No existe el nodo " + id + ". Revisa el ID mostrado en la lista.");
+                continue;
+            }
+            double heuristica = leerDecimal("Nueva heurística h(" + nodo.getId() + ")");
+            controladorGrafo.asignarHeuristica(nodo.getId(), heuristica);
+        }
+        System.out.println("Heurísticas guardadas.");
+    }
+
+    private void mostrarHeuristicas() {
+        System.out.println("\nHeurísticas actuales:");
+        for (Nodo nodo : controladorGrafo.getGrafo().obtenerNodos()) {
+            System.out.printf("%s: h(n)=%.2f%n", nodo.getId(), nodo.getHeuristica());
+        }
     }
 
     private void actualizarPeso() {
@@ -331,10 +360,32 @@ public class MenuConsola {
         while (true) {
             String valor = leerTexto(mensaje);
             try {
-                return Double.parseDouble(valor);
+                return convertirDecimal(valor, "número");
             } catch (NumberFormatException ex) {
-                System.out.println("Escribe un número válido.");
+                System.out.println(ex.getMessage());
             }
+        }
+    }
+
+    private double leerDecimalOpcional(String mensaje, double valorActual) {
+        while (true) {
+            String valor = leerTexto(mensaje);
+            if (valor.isEmpty()) return valorActual;
+            try {
+                return convertirDecimal(valor, "heurística");
+            } catch (NumberFormatException ex) {
+                System.out.println(ex.getMessage());
+            }
+        }
+    }
+
+    private double convertirDecimal(String valor, String tipo) {
+        try {
+            double numero = Double.parseDouble(valor);
+            if (!Double.isFinite(numero)) throw new NumberFormatException();
+            return numero;
+        } catch (NumberFormatException ex) {
+            throw new NumberFormatException("Escribe un " + tipo + " válido y finito.");
         }
     }
 

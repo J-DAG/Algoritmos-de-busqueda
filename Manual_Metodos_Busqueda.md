@@ -4,6 +4,8 @@ Este manual describe cómo funciona el programa Java de este repositorio. Se enf
 
 En la opción **Crear nodo(s)** puedes ingresar varios identificadores separados por comas, por ejemplo `H, A, B, C`. Los IDs se recortan para quitar espacios; si alguno ya existe, se omite y se informa sin detener la creación de los demás. Los nodos creados desde esta opción comienzan con heurística `0`; después puedes ajustarla en **Asignar heurística**.
 
+La opción **Asignar heurística** recorre los nodos existentes y solicita `h(n)` para cada uno. Presiona Enter en un nodo para conservar su valor actual. Al terminar, muestra todas las heurísticas y permite escribir el ID de cualquier nodo para corregir su valor; presiona Enter sin ID cuando la revisión esté lista.
+
 ## 1. Ejecutar el programa
 
 Ejecuta `Main.main()` desde IntelliJ IDEA. Al iniciar aparece una selección de grafo:
